@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:Style src="MainMenuStyle.uss" />
+    <ui:VisualElement name="pause-overlay" class="pause-overlay">
+
+        <ui:VisualElement name="container" class="container">
+            <ui:VisualElement class="corner corner-tl" />
+            <ui:VisualElement class="corner corner-tr" />
+            <ui:VisualElement class="corner corner-bl" />
+            <ui:VisualElement class="corner corner-br" />
+
+            <ui:Label name="title" text="PAUSED" class="title" />
+            <ui:Label text="GAME SUSPENDED" class="tagline" />
+            <ui:VisualElement class="divider" />
+            <ui:Button name="resumeButton" text="RESUME" class="button button-primary" />
+            <ui:Button name="menuButton" text="MAIN MENU" class="button button-secondary" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

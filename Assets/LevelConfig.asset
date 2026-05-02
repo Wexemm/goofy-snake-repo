@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ead9705cdb3478745a0959244fc0880b, type: 3}
+  m_Name: LevelConfig
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  wallPrefab: {fileID: 7746376323487629794, guid: 2af45c48e01d99f46ad3f90a1e411bcc, type: 3}
+  floorPrefab: {fileID: 5870380658743513315, guid: 97f25a8c666bfee478bb63be0a858808, type: 3}
+  redAreaPrefab: {fileID: 3105311672557784364, guid: 9198f2a737c1a384081dddaeaf615500, type: 3}
+  blueAreaPrefab: {fileID: 3037298032273632396, guid: db4904e962615ed408c81fc0aeecede0, type: 3}
+  redButtonPrefab: {fileID: 8032413955346080747, guid: 2e21f10b0008ff74ca29f06b8355f928, type: 3}
+  blueButtonPrefab: {fileID: 6444202130953871440, guid: 1350ed0168de03043804faa465aa7132, type: 3}
+  exitPrefab: {fileID: 1362779645342904106, guid: f902afaca1c403d4f852014a908f8447, type: 3}
+  player1Prefab: {fileID: 4224791087982986696, guid: 79a9659657a800d4d8012afd6eaa93fe, type: 3}
+  player2Prefab: {fileID: 5432195789519597303, guid: fa475ff1c8338224298ff03cc94a7b02, type: 3}
+  yellowButtonPrefab: {fileID: 6586046922463770983, guid: 0e6974c6ab391464ca0aca4da13af289, type: 3}
+  yellowLeverPrefab: {fileID: 2746469912397463005, guid: 4ca3e5235b754ce48a611a6aa09d26f6, type: 3}
+  yellowGatePrefab: {fileID: 1289475550497958782, guid: 4297c4c632dda924cb54e45c088812d4, type: 3}
+  magentaButtonPrefab: {fileID: 7424908524435736421, guid: 43af835e2c742f84b911d7fb29ea6a5b, type: 3}
+  magentaLeverPrefab: {fileID: 7425874653625006978, guid: 7306f02ad542aa24899427e877d48974, type: 3}
+  magentaGatePrefab: {fileID: 909032784097513056, guid: d681b50c5c3312f49a4b078c3cda76da, type: 3}
+  cyanButtonPrefab: {fileID: 6989074455502293450, guid: 86ad26a52cab65045a5d188100471db8, type: 3}
+  cyanLeverPrefab: {fileID: 6450567361490643216, guid: b0ac4e6f67d1fb645971a3ffb89c01b9, type: 3}
+  cyanGatePrefab: {fileID: 2867466548961479231, guid: 82a7b2c6d4e46c340ad53987ecbe1716, type: 3}
+  chaserEnemyPrefab: {fileID: 3348751105625351199, guid: deba17ac6d916bf4598000ba045d4ebb, type: 3}
+  redEnemyPrefab: {fileID: 3348751105625351199, guid: f4bc604f15271594cb474c6331cc8c7b, type: 3}
+  blueEnemyPrefab: {fileID: 3348751105625351199, guid: fc0119a52dcd0a14bbf56bff9b316f79, type: 3}

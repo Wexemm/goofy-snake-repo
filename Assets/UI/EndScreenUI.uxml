@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:Style src="MainMenuStyle.uss" />
+    <ui:VisualElement name="root" class="root">
+
+        <!-- HUD top bar -->
+        <ui:VisualElement class="top-bar">
+            <ui:Label text="SESSION.END" class="sys-label" />
+            <ui:VisualElement class="bar-line" />
+            <ui:Label text="STATUS: OK" class="sys-label" />
+        </ui:VisualElement>
+
+        <!-- Main panel -->
+        <ui:VisualElement name="container" class="container">
+            <ui:VisualElement class="corner corner-tl" />
+            <ui:VisualElement class="corner corner-tr" />
+            <ui:VisualElement class="corner corner-bl" />
+            <ui:VisualElement class="corner corner-br" />
+
+            <ui:Label name="title" text="GAME COMPLETE" class="end-title" />
+            <ui:Label name="subtitle" text="GOOFY SNAKE" class="end-subtitle" />
+
+            <ui:VisualElement class="result-panel">
+                <ui:Label text="THANKS FOR PLAYING" class="result-text" />
+            </ui:VisualElement>
+
+            <ui:VisualElement class="divider" />
+            <ui:Button name="menuButton" text="MAIN MENU" class="button button-secondary" />
+        </ui:VisualElement>
+
+        <!-- HUD bottom bar -->
+        <ui:VisualElement class="bottom-bar">
+            <ui:Label text="SYSTEM IDLE" class="status-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

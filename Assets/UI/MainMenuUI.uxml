@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ui:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ui="UnityEngine.UIElements"
+    xsi:noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd"
+>
+    <ui:Style src="MainMenuStyle.uss" />
+    <ui:VisualElement name="root" class="root">
+
+        <!-- HUD top bar -->
+        <ui:VisualElement class="top-bar">
+            <ui:Label text="SYS.INIT" class="sys-label" />
+            <ui:VisualElement class="bar-line" />
+            <ui:Label text="v2.4.1" class="sys-label" />
+        </ui:VisualElement>
+
+        <!-- Main panel -->
+        <ui:VisualElement name="container" class="container">
+            <ui:VisualElement class="corner corner-tl" />
+            <ui:VisualElement class="corner corner-tr" />
+            <ui:VisualElement class="corner corner-bl" />
+            <ui:VisualElement class="corner corner-br" />
+
+            <ui:Label name="title" text="GOOFY SNAKE" class="title" />
+            <ui:Label name="tagline" text="FUNNY GOOFY SNAKE GAME" class="tagline" />
+            <ui:VisualElement class="divider" />
+            <ui:Button name="continueButton" text="CONTINUE" class="button button-primary" />
+            <ui:Button name="startButton" text="NEW GAME" class="button button-secondary" />
+            <ui:Button name="levelsButton" text="SELECT LEVEL" class="button button-secondary" />
+            <ui:Button name="quitButton" text="EXIT" class="button button-danger" />
+        </ui:VisualElement>
+
+        <!-- Level select panel (hidden by default) -->
+        <ui:VisualElement name="level-select-panel" class="container level-select-panel">
+            <ui:VisualElement class="corner corner-tl" />
+            <ui:VisualElement class="corner corner-tr" />
+            <ui:VisualElement class="corner corner-bl" />
+            <ui:VisualElement class="corner corner-br" />
+
+            <ui:Label text="SELECT LEVEL" class="level-select-title" />
+            <ui:Label text="AVAILABLE MISSIONS" class="tagline" />
+            <ui:VisualElement class="divider" />
+            <ui:VisualElement name="level-grid" class="level-grid" />
+            <ui:Button name="backButton" text="BACK" class="button button-secondary" />
+        </ui:VisualElement>
+
+        <!-- HUD bottom bar -->
+        <ui:VisualElement class="bottom-bar">
+            <ui:Label text="READY" class="status-label" />
+        </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>

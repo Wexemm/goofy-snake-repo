@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Twister Puzzle – Level Editor</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@400;600&display=swap");
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0e0e10;
+        --surface: #1a1a1f;
+        --border: #2a2a35;
+        --text: #e8e8f0;
+        --muted: #666680;
+        --accent: #7c6af7;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Space Grotesk", sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 24px;
+        gap: 20px;
+      }
+
+      h1 {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        color: var(--text);
+      }
+
+      h1 span {
+        color: var(--accent);
+      }
+
+      .layout {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        width: 100%;
+        max-width: 1100px;
+      }
+
+      /* SIDEBAR */
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        flex-shrink: 0;
+        max-height: 600px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .section-label {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+
+      .sidebar-top {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .brush-col,
+      .gate-col {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 150px;
+      }
+
+      .tile-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border-radius: 7px;
+        border: 1.5px solid var(--border);
+        background: var(--surface);
+        color: var(--text);
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 12px;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s;
+        width: 100%;
+        text-align: left;
+      }
+
+      .tile-btn:hover {
+        border-color: #444460;
+        background: #22222a;
+      }
+      .tile-btn.active {
+        border-color: var(--accent);
+        background: #1e1a3a;
+      }
+
+      .tile-swatch {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .tile-swatch.circle {
+        border-radius: 50%;
+      }
+      .tile-swatch.lever {
+        border-radius: 30%;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+      }
+      .tile-swatch.gate {
+        border-radius: 2px;
+        border: 2px solid rgba(255, 255, 255, 0.25);
+      }
+
+      .color-group {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 6px;
+        border-radius: 7px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      .color-group-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+
+      .right-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 150px;
+      }
+
+      .size-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .size-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .size-row input {
+        width: 60px;
+        padding: 5px 8px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        text-align: right;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        border-radius: 8px;
+        border: none;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.15s;
+        width: 100%;
+      }
+      .btn:hover {
+        opacity: 0.85;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .btn-danger {
+        background: #3a1a1a;
+        color: #f07070;
+        border: 1px solid #5a2a2a;
+      }
+
+      /* GRID */
+      .grid-wrap {
+        width: 600px;
+        height: 600px;
+        flex-shrink: 0;
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #grid {
+        display: inline-grid;
+        gap: 1px;
+        background: #111118;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        user-select: none;
+      }
+
+      .cell {
+        width: var(--cell-size, 28px);
+        height: var(--cell-size, 28px);
+        cursor: crosshair;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        font-family: "JetBrains Mono", monospace;
+        transition: filter 0.05s;
+        position: relative;
+      }
+      .cell:hover {
+        filter: brightness(1.3);
+      }
+
+      /* OUTPUT */
+      .output-wrap {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .output-label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+
+      #output {
+        width: 100%;
+        min-height: 300px;
+        background: #0a0a0d;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: #a0d0a0;
+        resize: vertical;
+        line-height: 1.6;
+      }
+
+      .copy-btn {
+        padding: 6px 14px;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-family: "Space Grotesk", sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: opacity 0.15s;
+      }
+      .copy-btn:hover {
+        opacity: 0.85;
+      }
+      .copy-btn.copied {
+        background: #3a7a3a;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Twister Puzzle <span>Level Editor</span></h1>
+
+    <div class="layout">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sidebar-top">
+          <!-- BAL OSZLOP: Ecset -->
+          <div class="brush-col">
+            <div class="color-group">
+              <div class="color-group-label" style="color: var(--muted)">Alap</div>
+              <button class="tile-btn active" onclick="selectTile('#', this)">
+                <div class="tile-swatch" style="background: #333340">#</div>
+                Fal
+              </button>
+              <button class="tile-btn" onclick="selectTile('.', this)">
+                <div class="tile-swatch" style="background: #1e1e28">.</div>
+                Padló
+              </button>
+            </div>
+
+            <div class="color-group">
+              <div class="color-group-label" style="color: var(--muted)">Területek</div>
+              <button class="tile-btn" onclick="selectTile('R', this)">
+                <div class="tile-swatch" style="background: #8b2020">R</div>
+                Piros terület
+              </button>
+              <button class="tile-btn" onclick="selectTile('B', this)">
+                <div class="tile-swatch" style="background: #1a4a8b">B</div>
+                Kék terület
+              </button>
+            </div>
+
+            <div class="color-group">
+              <div class="color-group-label" style="color: var(--muted)">Spawn / Cél</div>
+              <button class="tile-btn" onclick="selectTile('1', this)">
+                <div class="tile-swatch" style="background: #cc2222; color: #fff">1</div>
+                J1 Start
+              </button>
+              <button class="tile-btn" onclick="selectTile('2', this)">
+                <div class="tile-swatch" style="background: #2244cc; color: #fff">2</div>
+                J2 Start
+              </button>
+              <button class="tile-btn" onclick="selectTile('E', this)">
+                <div class="tile-swatch" style="background: #886600; color: #ffdd44">E</div>
+                Kijárat
+              </button>
+            </div>
+
+            <div class="color-group">
+              <div class="color-group-label" style="color: #cc88ff">Ellenségek</div>
+              <button class="tile-btn" onclick="selectTile('e', this)">
+                <div
+                  class="tile-swatch"
+                  style="background: #2a1040; color: #cc88ff; outline: 2px solid #cc88ff; border-radius: 3px"
+                >
+                  e
+                </div>
+                Chaser
+              </button>
+              <button class="tile-btn" onclick="selectTile('q', this)">
+                <div
+                  class="tile-swatch"
+                  style="background: #3a0e0e; color: #ff5555; outline: 2px solid #ff5555; border-radius: 3px"
+                >
+                  q
+                </div>
+                Piros enemy
+              </button>
+              <button class="tile-btn" onclick="selectTile('u', this)">
+                <div
+                  class="tile-swatch"
+                  style="background: #0e0e3a; color: #5599ff; outline: 2px solid #5599ff; border-radius: 3px"
+                >
+                  u
+                </div>
+                Kék enemy
+              </button>
+            </div>
+          </div>
+
+          <!-- JOBB OSZLOP: Kapurendszer + Ellenségek -->
+          <div class="gate-col">
+            <div class="color-group">
+              <div class="color-group-label" style="color: #ffd700">Sárga</div>
+              <button class="tile-btn" onclick="selectTile('y', this)">
+                <div class="tile-swatch circle" style="background: #7a6800; color: #ffd700">y</div>
+                Gomb
+              </button>
+              <button class="tile-btn" onclick="selectTile('Y', this)">
+                <div class="tile-swatch lever" style="background: #7a6800; color: #ffd700">Y</div>
+                Lever
+              </button>
+              <button class="tile-btn" onclick="selectTile('3', this)">
+                <div class="tile-swatch gate" style="background: #7a6800; color: #ffd700">3</div>
+                Kapu
+              </button>
+            </div>
+
+            <div class="color-group">
+              <div class="color-group-label" style="color: #ff55cc">Magenta</div>
+              <button class="tile-btn" onclick="selectTile('p', this)">
+                <div class="tile-swatch circle" style="background: #6b0055; color: #ff55cc">p</div>
+                Gomb
+              </button>
+              <button class="tile-btn" onclick="selectTile('P', this)">
+                <div class="tile-swatch lever" style="background: #6b0055; color: #ff55cc">P</div>
+                Lever
+              </button>
+              <button class="tile-btn" onclick="selectTile('4', this)">
+                <div class="tile-swatch gate" style="background: #6b0055; color: #ff55cc">4</div>
+                Kapu
+              </button>
+            </div>
+
+            <div class="color-group">
+              <div class="color-group-label" style="color: #00e5ff">Cián</div>
+              <button class="tile-btn" onclick="selectTile('c', this)">
+                <div class="tile-swatch circle" style="background: #006875; color: #00e5ff">c</div>
+                Gomb
+              </button>
+              <button class="tile-btn" onclick="selectTile('C', this)">
+                <div class="tile-swatch lever" style="background: #006875; color: #00e5ff">C</div>
+                Lever
+              </button>
+              <button class="tile-btn" onclick="selectTile('5', this)">
+                <div class="tile-swatch gate" style="background: #006875; color: #00e5ff">5</div>
+                Kapu
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRID -->
+      <div class="grid-wrap">
+        <div id="grid"></div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div class="right-panel">
+        <div class="size-controls">
+          <div class="size-row">
+            <span>Sor</span>
+            <input type="number" id="rows" value="30" min="1" max="30" />
+          </div>
+          <div class="size-row">
+            <span>Oszlop</span>
+            <input type="number" id="cols" value="30" min="1" max="30" />
+          </div>
+        </div>
+        <button class="btn btn-secondary" onclick="resizeGrid()">Átméretez</button>
+        <button class="btn btn-primary" onclick="fillBorder()">Falak körbe</button>
+        <button class="btn btn-danger" onclick="clearGrid()">Törlés</button>
+      </div>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="output-wrap">
+      <div class="output-label">
+        <span class="section-label">Kimenet</span>
+        <div style="display: flex; gap: 8px">
+          <button class="copy-btn" id="copyBtn" onclick="copyOutput()">Másolás</button>
+          <button class="copy-btn" id="loadBtn" onclick="loadOutput()" style="background: #44bb99">Betöltés</button>
+        </div>
+      </div>
+      <textarea id="output" placeholder="Ide beilleszthetsz egy palyát vagy szerkesztheted az aktuálisat..."></textarea>
+    </div>
+
+    <script>
+      const TILE_COLORS = {
+        "#": { bg: "#333340", color: "#888" },
+        ".": { bg: "#1a1a22", color: "#333" },
+        R: { bg: "#6b1a1a", color: "#ff8080" },
+        B: { bg: "#1a2e6b", color: "#80aaff" },
+        r: { bg: "#aa2222", color: "#ffaaaa", shape: "circle" },
+        b: { bg: "#2233aa", color: "#aabbff", shape: "circle" },
+        E: { bg: "#886600", color: "#ffdd44" },
+        1: { bg: "#991a1a", color: "#fff" },
+        2: { bg: "#1a33aa", color: "#fff" },
+        // Yellow
+        y: { bg: "#7a6800", color: "#ffd700", shape: "circle" },
+        Y: { bg: "#7a6800", color: "#ffd700", shape: "lever" },
+        3: { bg: "#7a6800", color: "#ffd700", shape: "gate" },
+        // Magenta
+        p: { bg: "#6b0055", color: "#ff55cc", shape: "circle" },
+        P: { bg: "#6b0055", color: "#ff55cc", shape: "lever" },
+        4: { bg: "#6b0055", color: "#ff55cc", shape: "gate" },
+        // Cyan
+        c: { bg: "#006875", color: "#00e5ff", shape: "circle" },
+        C: { bg: "#006875", color: "#00e5ff", shape: "lever" },
+        5: { bg: "#006875", color: "#00e5ff", shape: "gate" },
+        // Enemies
+        e: { bg: "#2a1040", color: "#cc88ff", shape: "enemy" },
+        q: { bg: "#3a0e0e", color: "#ff5555", shape: "enemy" },
+        u: { bg: "#0e0e3a", color: "#5599ff", shape: "enemy" },
+      }
+
+      let currentTile = "#"
+      let isDrawing = false
+      let rows = 30
+      let cols = 30
+      let grid = []
+
+      function initGrid() {
+        grid = []
+        for (let r = 0; r < rows; r++) {
+          grid.push(Array(cols).fill("."))
+        }
+        renderGrid()
+      }
+
+      function resizeGrid() {
+        rows = parseInt(document.getElementById("rows").value)
+        cols = parseInt(document.getElementById("cols").value)
+        initGrid()
+      }
+
+      function clearGrid() {
+        initGrid()
+      }
+
+      function fillBorder() {
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            if (r === 0 || r === rows - 1 || c === 0 || c === cols - 1) {
+              grid[r][c] = "#"
+            }
+          }
+        }
+        renderGrid()
+        generateOutput()
+      }
+
+      function selectTile(tile, btn) {
+        currentTile = tile
+        document.querySelectorAll(".tile-btn").forEach((b) => b.classList.remove("active"))
+        btn.classList.add("active")
+      }
+
+      function paintCell(r, c) {
+        grid[r][c] = currentTile
+        const cell = document.querySelector(`[data-r="${r}"][data-c="${c}"]`)
+        if (cell) styleCell(cell, currentTile)
+        generateOutput()
+      }
+
+      function styleCell(cell, tile) {
+        const t = TILE_COLORS[tile] || TILE_COLORS["."]
+        cell.style.background = t.bg
+        cell.style.color = t.color
+        cell.style.outline = "none"
+        cell.style.boxShadow = ""
+        if (t.shape === "circle") {
+          cell.style.borderRadius = "50%"
+          cell.style.outline = ""
+        } else if (t.shape === "lever") {
+          cell.style.borderRadius = "30%"
+          cell.style.outline = `1.5px solid ${t.color}44`
+        } else if (t.shape === "gate") {
+          cell.style.borderRadius = "2px"
+          cell.style.outline = `1.5px solid ${t.color}66`
+        } else if (t.shape === "enemy") {
+          cell.style.borderRadius = "3px"
+          cell.style.outline = `2px solid ${t.color}`
+          cell.style.boxShadow = `0 0 6px ${t.color}66`
+        } else {
+          cell.style.borderRadius = "0"
+        }
+        cell.textContent = ["#", "."].includes(tile) ? "" : tile
+      }
+
+      function renderGrid() {
+        const el = document.getElementById("grid")
+        const wrap = el.parentElement
+        const available = Math.min(wrap.clientWidth - 32, wrap.clientHeight - 32)
+        const cellByCol = Math.floor((available - (cols - 1)) / cols)
+        const cellByRow = Math.floor((available - (rows - 1)) / rows)
+        const cellSize = Math.min(cellByCol, cellByRow)
+        el.style.setProperty("--cell-size", cellSize + "px")
+        el.style.gridTemplateColumns = `repeat(${cols}, ${cellSize}px)`
+        el.innerHTML = ""
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const cell = document.createElement("div")
+            cell.className = "cell"
+            cell.dataset.r = r
+            cell.dataset.c = c
+            styleCell(cell, grid[r][c])
+
+            cell.addEventListener("mousedown", (e) => {
+              e.preventDefault()
+              isDrawing = true
+              paintCell(r, c)
+            })
+            cell.addEventListener("mouseover", () => {
+              if (isDrawing) paintCell(r, c)
+            })
+
+            el.appendChild(cell)
+          }
+        }
+        generateOutput()
+      }
+
+      document.addEventListener("mouseup", () => {
+        isDrawing = false
+      })
+
+      function generateOutput() {
+        const lines = grid.map((row) => row.join(""))
+        const output = lines.join("\n")
+        document.getElementById("output").value = output
+      }
+
+      function copyOutput() {
+        const text = document.getElementById("output").value
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = document.getElementById("copyBtn")
+          btn.textContent = "Másolva!"
+          btn.classList.add("copied")
+          setTimeout(() => {
+            btn.textContent = "Másolás"
+            btn.classList.remove("copied")
+          }, 2000)
+        })
+      }
+
+      function parseOutput() {
+        const text = document.getElementById("output").value.trim()
+        if (!text) return false
+
+        const lines = text.split("\n").map((line) => line.trim()).filter((line) => line.length > 0)
+        if (lines.length === 0) return false
+
+        // Ellenőrizd, hogy minden sor azonos hosszú-e
+        const firstLen = lines[0].length
+        for (let i = 1; i < lines.length; i++) {
+          if (lines[i].length !== firstLen) {
+            alert(`Hiba: A ${i + 1}. sor hossza (${lines[i].length}) nem egyezik az elsővel (${firstLen})`)
+            return false
+          }
+        }
+
+        // Új grid dimenziókat állítsd be
+        rows = lines.length
+        cols = firstLen
+        document.getElementById("rows").value = rows
+        document.getElementById("cols").value = cols
+
+        // Töltsd meg az új gridot
+        grid = []
+        for (let r = 0; r < rows; r++) {
+          grid[r] = lines[r].split("")
+        }
+
+        renderGrid()
+        return true
+      }
+
+      function loadOutput() {
+        if (parseOutput()) {
+          const btn = document.getElementById("loadBtn")
+          btn.textContent = "Betöltve!"
+          btn.style.background = "#44bb99"
+          setTimeout(() => {
+            btn.textContent = "Betöltés"
+          }, 2000)
+        } else {
+          alert("A kimenet formátuma nem megfelelő. Győződj meg róla, hogy minden sor azonos hosszú, és csak érvényes karaktereket tartalmaz.")
+        }
+      }
+
+      // Output mező szerkesztés eseménye
+      document.getElementById("output").addEventListener("change", () => {
+        if (!parseOutput()) {
+          console.log("Az output formátuma nem megfelelő. Próbálj meg helyesen formázott palya szöveggel.")
+        }
+      })
+
+      // Init
+      initGrid()
+      fillBorder()
+    </script>
+  </body>
+</html>
