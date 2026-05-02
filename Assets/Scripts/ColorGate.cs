@@ -43,6 +43,6 @@ public class ColorGate : MonoBehaviour
             sr.sprite = open ? activeSprite : inactiveSprite;
 
         // Rebuild the pathfinding grid so enemies respect the new gate state.
-        AStarGrid.Instance?.BuildGrid();
+        if (AStarGrid.Instance != null) AStarGrid.Instance.BuildGrid();
     }
 }
