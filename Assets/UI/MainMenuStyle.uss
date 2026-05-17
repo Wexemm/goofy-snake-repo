@@ -243,6 +243,26 @@
     border-color: rgb(255, 150, 150);
 }
 
+/* Amber/Gold — labyrinth / procedural mode */
+.button-maze {
+    background-color: rgba(160, 100, 20, 0.22);
+    border-color: rgba(210, 150, 40, 0.80);
+    color: rgb(230, 180, 70);
+    text-shadow: 0 0 16px rgba(210, 150, 40, 0.85), 0 0 32px rgba(210, 150, 40, 0.45);
+}
+
+.button-maze:hover {
+    background-color: rgba(160, 100, 20, 0.34);
+    border-color: rgb(240, 180, 60);
+    color: rgb(255, 215, 110);
+    text-shadow: 0 0 24px rgba(210, 150, 40, 1.0), 0 0 48px rgba(210, 150, 40, 0.60);
+}
+
+.button-maze:active {
+    background-color: rgba(160, 100, 20, 0.46);
+    border-color: rgb(255, 205, 90);
+}
+
 /* ================================================
    END SCREEN SPECIFIC
    ================================================ */

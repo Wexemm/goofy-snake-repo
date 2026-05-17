@@ -27,6 +27,7 @@
             <ui:Button name="continueButton" text="CONTINUE" class="button button-primary" />
             <ui:Button name="startButton" text="NEW GAME" class="button button-secondary" />
             <ui:Button name="levelsButton" text="SELECT LEVEL" class="button button-secondary" />
+            <ui:Button name="labyrinthButton" text="LABYRINTH" class="button button-maze" />
             <ui:Button name="quitButton" text="EXIT" class="button button-danger" />
         </ui:VisualElement>
 

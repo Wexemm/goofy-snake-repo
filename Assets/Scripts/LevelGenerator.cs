@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -11,24 +12,65 @@ public class LevelGenerator : MonoBehaviour
     [Header("Kamera")]
     public float cameraPadding = 0.5f;
 
+    [Header("Procedurális pálya generálás")]
+    [Tooltip("Ha be van kapcsolva, véletlenszerű labirintus-pálya generálódik a kézzel készített pályák helyett.")]
+    public bool useProceduralGeneration = false;
+    public ProceduralLevelGenerator proceduralGenerator;
+
+    [Tooltip("In-game UI (Súj pálya / Mentés / Betöltés gombok) megjelenjen-e procedurális módban.")]
+    public bool showProceduralUI = true;
+    [Tooltip("Assets/UI/PanelSettings.asset — húzd be ide.")]
+    public PanelSettings panelSettings;
+
     void Start()
     {
+        // A főmenü gombjától érkező mód felülírja az Inspector beállítást
+        // GameMode 1 = Labyrinth (procedurális), 0 = normál, -1 = nem lett beállítva (Inspector dönt)
+        int gameMode = PlayerPrefs.GetInt("GameMode", -1);
+        if      (gameMode == 1) useProceduralGeneration = true;
+        else if (gameMode == 0) useProceduralGeneration = false;
+
         if (LevelManager.instance != null)
-            LevelManager.instance.totalLevels = levels.Length;
+            LevelManager.instance.totalLevels = useProceduralGeneration ? int.MaxValue : levels.Length;
 
         GenerateLevel();
+
+        if (useProceduralGeneration && showProceduralUI)
+        {
+            var ui = gameObject.AddComponent<ProceduralMapUI>();
+            ui.panelSettings = panelSettings;
+        }
     }
 
     void GenerateLevel()
     {
         if (config == null) { Debug.LogError("LevelGenerator: Config nincs behúzva az Inspectorba!", this); return; }
-        if (levels == null || levels.Length == 0) { Debug.LogError("LevelGenerator: Levels tömb üres!", this); return; }
 
-        int idx = Mathf.Clamp(PlayerPrefs.GetInt("currentLevel", 0), 0, levels.Length - 1);
-        LevelData levelData = levels[idx];
-        if (levelData == null) { Debug.LogError($"LevelGenerator: levels[{idx}] nincs behúzva!", this); return; }
+        string[] rows;
+        LevelData levelData = null;
 
-        string[] rows = levelData.GetRows();
+        if (useProceduralGeneration)
+        {
+            // Automatikus pályagenerálás
+            if (proceduralGenerator == null)
+                proceduralGenerator = GetComponent<ProceduralLevelGenerator>()
+                                      ?? gameObject.AddComponent<ProceduralLevelGenerator>();
+
+            string map = proceduralGenerator.Generate();
+            rows = System.Array.FindAll(
+                map.Replace("\r", "").Split('\n'),
+                r => r.Length > 0);
+        }
+        else
+        {
+            if (levels == null || levels.Length == 0) { Debug.LogError("LevelGenerator: Levels tömb üres!", this); return; }
+
+            int idx = Mathf.Clamp(PlayerPrefs.GetInt("currentLevel", 0), 0, levels.Length - 1);
+            levelData = levels[idx];
+            if (levelData == null) { Debug.LogError($"LevelGenerator: levels[{idx}] nincs behúzva!", this); return; }
+            rows = levelData.GetRows();
+        }
+
         int cols = rows[0].Length;
 
         // Középre igazított offset (center-pivot sprite-okhoz)
@@ -138,7 +180,8 @@ public class LevelGenerator : MonoBehaviour
             }
         }
 
-        SpawnEnemiesFromList(levelData, offsetX, offsetY);
+        if (levelData != null)
+            SpawnEnemiesFromList(levelData, offsetX, offsetY);
 
         FitCamera(rows.Length, cols);
         FillOutsideWithWalls(rows.Length, cols);

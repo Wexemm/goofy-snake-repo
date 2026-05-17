@@ -50,8 +50,9 @@ public class MainMenuUI : MonoBehaviour
 
         _titleLabel = root.Q<Label>("title");
 
-        root.Q<Button>("startButton")?.RegisterCallback<ClickEvent>(_ => OnStart());
-        root.Q<Button>("quitButton") ?.RegisterCallback<ClickEvent>(_ => OnQuit());
+        root.Q<Button>("startButton")    ?.RegisterCallback<ClickEvent>(_ => OnStart());
+        root.Q<Button>("labyrinthButton")?.RegisterCallback<ClickEvent>(_ => OnLabyrinth());
+        root.Q<Button>("quitButton")     ?.RegisterCallback<ClickEvent>(_ => OnQuit());
 
         ScheduleNextGlitch();
     }
@@ -111,6 +112,18 @@ public class MainMenuUI : MonoBehaviour
     // ── Button handlers ────────────────────────────────────────────
     private void OnStart()
     {
+        // Normál mód: kézzel készített pályák
+        PlayerPrefs.SetInt("GameMode", 0);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(gameSceneName);
+    }
+
+    private void OnLabyrinth()
+    {
+        // Labirintus mód: automatikusan generált pályák
+        PlayerPrefs.SetInt("GameMode", 1);
+        PlayerPrefs.DeleteKey("ProceduralSeed"); // minden alkalommal új pálya
+        PlayerPrefs.Save();
         SceneManager.LoadScene(gameSceneName);
     }
 
