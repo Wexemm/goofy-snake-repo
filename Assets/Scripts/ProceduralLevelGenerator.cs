@@ -143,6 +143,9 @@ public class ProceduralLevelGenerator : MonoBehaviour
 
     void PlaceEnemies(int w, int h)
     {
+        // Verseny módban (Labyrinth) nincs ellenség – csak a két játékos versenyez
+        if (PlayerPrefs.GetInt("GameMode", 0) == 1) return;
+
         // Gyűjtsük össze a szabad padlócellákat (nem saroktól)
         var freeCells = new List<(int x, int y)>();
         for (int y = 3; y < h - 3; y++)

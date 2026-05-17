@@ -36,4 +36,12 @@ public class GameManager : MonoBehaviour
             UnityEngine.SceneManagement.SceneManager.LoadScene("EndScreen");
         }
     }
+
+    /// <summary>
+    /// Verseny módban hívódik meg, amikor az egyik játékos célba ér.
+    /// </summary>
+    public void RaceWin(int playerNumber)
+    {
+        RaceWinUI.Show(playerNumber);
+    }
 }
